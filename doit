@@ -1,0 +1,45 @@
+#!/usr/bin/env coffee
+
+sys = require 'sys'
+fs = require 'fs'
+
+[command, task] = process.argv[2..3]
+
+class TaskList
+  constructor: ->
+    @today = (new Date).toDateString()
+    @file = "#{process.env.HOME}/.doit"
+
+    try
+      @data = JSON.parse fs.readFileSync(@file)
+    catch error
+      @data = tasks: [], completions: {}
+
+    @tasks = @data.tasks.sort()
+    @completed = @data.completions[@today] || []
+
+  save: ->
+    fs.writeFile @file, JSON.stringify(@data, undefined, 2), (err) ->
+      sys.puts "ERROR: #{err}" if err
+
+  print: ->
+    for task in @tasks
+      sys.puts "#{ if task in @completed then "X" else "_" } #{task}"
+
+  add: (task) -> @tasks.push(task)
+
+  did: (task) ->
+    @completed = (@data.completions[@today] ?= [])
+    @completed.push(task)
+
+tasks = new TaskList
+
+switch command
+  when "add"
+    tasks.add task
+  when "did"
+    tasks.did task
+
+tasks.print()
+tasks.save()
+
