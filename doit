@@ -23,6 +23,8 @@ class TaskList
       sys.puts "ERROR: #{err}" if err
 
   print: ->
+    if @tasks.length == 0
+      sys.puts "(use `doit add <task>` to add a task)"
     for task in @tasks
       sys.puts "#{ if task in @completed then "X" else "_" } #{task}"
 
