@@ -15,7 +15,7 @@ class TaskList
     catch error
       @data = tasks: [], completions: {}
 
-    @tasks = @data.tasks.sort()
+    @tasks = @data.tasks
     @completed = @data.completions[@today] || []
 
   save: ->
@@ -25,14 +25,14 @@ class TaskList
   print: ->
     if @tasks.length == 0
       sys.puts "(use `doit add <task>` to add a task)"
-    for task in @tasks
+    for task in @tasks.sort()
       sys.puts "#{ if task in @completed then "X" else "_" } #{task}"
 
-  add: (task) -> @tasks.push(task)
+  add: (task) -> @tasks.push(task) unless task in @tasks
 
   did: (task) ->
     @completed = (@data.completions[@today] ?= [])
-    @completed.push(task)
+    @completed.push(task) unless task in @completed
 
 tasks = new TaskList
 
