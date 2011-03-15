@@ -4,10 +4,14 @@ sys = require 'sys'
 fs = require 'fs'
 
 [command, task] = process.argv[2..3]
+yesterday = "yesterday" in process.argv
 
 class TaskList
-  constructor: ->
-    @today = (new Date).toDateString()
+  constructor: (yesterday) ->
+    @date = new Date
+    @date.setDate @date.getDate() - 1 if yesterday
+    @date = @date.toDateString()
+
     @file = "#{process.env.HOME}/.doit"
 
     try
@@ -16,7 +20,7 @@ class TaskList
       @data = tasks: [], completions: {}
 
     @tasks = @data.tasks
-    @completed = @data.completions[@today] || []
+    @completed = @data.completions[@date] || []
 
   save: ->
     fs.writeFile @file, JSON.stringify(@data, undefined, 2), (err) ->
@@ -25,16 +29,18 @@ class TaskList
   print: ->
     if @tasks.length == 0
       sys.puts "(use `doit add <task>` to add a task)"
+    unless @date == (new Date).toDateString()
+      sys.puts @date
     for task in @tasks.sort()
       sys.puts "#{ if task in @completed then "X" else "_" } #{task}"
 
   add: (task) -> @tasks.push(task) unless task in @tasks
 
   did: (task) ->
-    @completed = (@data.completions[@today] ?= [])
+    @completed = (@data.completions[@date] ?= [])
     @completed.push(task) unless task in @completed
 
-tasks = new TaskList
+tasks = new TaskList(yesterday)
 
 switch command
   when "add"
