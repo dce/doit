@@ -2,6 +2,7 @@
 
 sys = require 'sys'
 fs = require 'fs'
+path = require 'path'
 
 [command, task] = process.argv[2..3]
 yesterday = "yesterday" in process.argv
@@ -15,9 +16,13 @@ class TaskList
     @file = "#{process.env.HOME}/.doit"
 
     try
-      @data = JSON.parse fs.readFileSync(@file)
+      @data = if path.existsSync(@file)
+        JSON.parse fs.readFileSync(@file)
+      else
+        tasks: [], completions: {}
     catch error
-      @data = tasks: [], completions: {}
+      sys.puts "There was a problem reading your .doit file: '#{error}'"
+      process.exit 1
 
     @tasks = @data.tasks
     @completed = @data.completions[@date] || []
