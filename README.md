@@ -1,6 +1,55 @@
-# doit
+# DOIT
 
-**doit** is a simple command line utility for managing daily goals. Simply run `doit` to see your tasks, `doit add <task>` to add a task, and `doit did <task>` to mark something completed. The list resets every day (though all your old data is still available).
+
+**DOIT** is a simple command line utility for tracking daily goals. Use it like this:
+
+    > doit
+
+    (use `doit add <task>` to add a task)
+
+    > doit add exercise
+
+      _ exercise
+
+    > doit add "practice piano"
+
+      _ exercise
+      _ practice piano
+
+    > doit did exercise
+
+      X exercise
+      _ practice piano
+
+    > doit yesterday
+
+      Mon Mar 14 2011
+
+      _ exercise
+      _ practice piano
+
+    > doit did "practice piano" yesterday
+
+      Mon Mar 14 2011
+
+      _ exercise
+      X practice piano
+
+    > cat ~/.doit
+    {
+      "tasks": [
+        "exercise",
+        "practice piano"
+      ],
+      "completions": {
+        "Tue Mar 15 2011": [
+          "exercise"
+        ],
+        "Mon Mar 14 2011": [
+          "practice piano"
+        ]
+      }
+    }
 
 ## Tech Details
 
