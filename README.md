@@ -53,6 +53,6 @@
 
 ## Tech Details
 
-**doit** is written entirely in [CoffeeScript][cfs] -- you'll need that installed in order to run the program. All your data is stored as JSON in a file called `.doit` in your home directory.
+**DOIT** is written entirely in [CoffeeScript][cfs] -- you'll need that installed in order to run the program. All your data is stored as JSON in a file called `.doit` in your home directory.
 
   [cfs]: http://jashkenas.github.com/coffee-script/
