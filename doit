@@ -45,7 +45,7 @@ class TaskList
 
   did: (task) ->
     @completed = (@data.completions[@date] ?= [])
-    @completed.push(task) unless task in @completed
+    @completed.push(task) if task in @tasks and task not in @completed
 
 tasks = new TaskList(yesterday)
 
