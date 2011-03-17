@@ -53,6 +53,7 @@
 
 ## Tech Details
 
-**DOIT** is written entirely in [CoffeeScript][cfs] -- you'll need that installed in order to run the program. All your data is stored as JSON in a file called `.doit` in your home directory.
+**DOIT** is written entirely in [CoffeeScript][cfs] -- you'll need that installed in order to run the program. All your data is stored as JSON in a file called `.doit` in your home directory. Move it into [Dropbox][drb] and create a symlink in your homedir and you can **DOIT** anywhere.
 
-  [cfs]: http://jashkenas.github.com/coffee-script/
+  [cfs]: http://jashkenas.github.com/coffee-script
+  [drb]: http://www.dropbox.com
