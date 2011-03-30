@@ -4,6 +4,11 @@ sys = require 'sys'
 fs = require 'fs'
 path = require 'path'
 
+pad = (output) ->
+  sys.puts ""
+  output()
+  sys.puts ""
+
 load_tasks = (file, callback) ->
   try
     data = if path.existsSync(file)
@@ -14,9 +19,12 @@ load_tasks = (file, callback) ->
   catch error
     sys.puts "There was a problem reading your .doit file: '#{error}'"
 
-add = (tasks, task, callback) ->
-  tasks.push(task) unless task in tasks
-  callback tasks
+add = (task, tasks, callback) ->
+  if task in tasks
+    sys.puts "Task already in list"
+  else
+    tasks.push(task)
+    callback tasks
 
 did = (task, tasks, completions, date, callback) ->
   completions[date] ?= []
@@ -32,19 +40,20 @@ did = (task, tasks, completions, date, callback) ->
 save = (tasks, completions, file, callback) ->
   data = tasks: tasks, completions: completions
   fs.writeFile file, JSON.stringify(data, undefined, 2), (err) ->
-    sys.puts err if err
-    callback()
+    if err
+      sys.puts err
+    else
+      callback()
 
 print = (tasks, completions, date) ->
-  sys.puts ""
-  if tasks.length == 0
-    sys.puts "(use `doit add <task>` to add a task)"
-  else
-    unless date == (new Date).toDateString()
-      sys.puts "  #{date}\n"
-    for task in tasks.sort()
-      sys.puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
-  sys.puts ""
+  pad ->
+    if tasks.length == 0
+      sys.puts "(use `doit add <task>` to add a task)"
+    else
+      unless date == (new Date).toDateString()
+        sys.puts "  #{date}\n"
+      for task in tasks.sort()
+        sys.puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
 
 file = "#{process.env.HOME}/.doit"
 
@@ -57,7 +66,7 @@ date = date.toDateString()
 load_tasks file, (tasks, completions) ->
   switch command
     when "add"
-      add tasks, task, (tasks) ->
+      add task, tasks, (tasks) ->
         save tasks, completions, file, ->
           print tasks, completions, date
     when "did"
