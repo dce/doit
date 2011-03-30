@@ -4,57 +4,65 @@ sys = require 'sys'
 fs = require 'fs'
 path = require 'path'
 
+load_tasks = (file, callback) ->
+  try
+    data = if path.existsSync(file)
+      JSON.parse fs.readFileSync(file)
+    else
+      tasks: [], completions: {}
+    callback data.tasks, data.completions
+  catch error
+    sys.puts "There was a problem reading your .doit file: '#{error}'"
+
+add = (tasks, task, callback) ->
+  tasks.push(task) unless task in tasks
+  callback tasks
+
+did = (task, tasks, completions, date, callback) ->
+  completions[date] ?= []
+
+  if task not in tasks
+    sys.puts "Not a valid task"
+  else if task in completions[date]
+    sys.puts "Task already completed"
+  else
+    completions[date].push(task)
+    callback completions
+
+save = (tasks, completions, file, callback) ->
+  data = tasks: tasks, completions: completions
+  fs.writeFile file, JSON.stringify(data, undefined, 2), (err) ->
+    sys.puts err if err
+    callback()
+
+print = (tasks, completions, date) ->
+  sys.puts ""
+  if tasks.length == 0
+    sys.puts "(use `doit add <task>` to add a task)"
+  else
+    unless date == (new Date).toDateString()
+      sys.puts "  #{date}\n"
+    for task in tasks.sort()
+      sys.puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
+  sys.puts ""
+
+file = "#{process.env.HOME}/.doit"
+
+date = new Date
+date.setDate date.getDate() - 1 if "yesterday" in process.argv
+date = date.toDateString()
+
 [command, task] = process.argv[2..3]
-yesterday = "yesterday" in process.argv
 
-class TaskList
-  constructor: (yesterday) ->
-    @date = new Date
-    @date.setDate @date.getDate() - 1 if yesterday
-    @date = @date.toDateString()
-
-    @file = "#{process.env.HOME}/.doit"
-
-    try
-      @data = if path.existsSync(@file)
-        JSON.parse fs.readFileSync(@file)
-      else
-        tasks: [], completions: {}
-    catch error
-      sys.puts "There was a problem reading your .doit file: '#{error}'"
-      process.exit 1
-
-    @tasks = @data.tasks
-    @completed = @data.completions[@date] || []
-
-  save: ->
-    fs.writeFile @file, JSON.stringify(@data, undefined, 2), (err) ->
-      sys.puts "ERROR: #{err}" if err
-
-  print: ->
-    sys.puts ""
-    if @tasks.length == 0
-      sys.puts "(use `doit add <task>` to add a task)"
-    unless @date == (new Date).toDateString()
-      sys.puts "  #{@date}\n"
-    for task in @tasks.sort()
-      sys.puts "  #{ if task in @completed then "X" else "_" } #{task}"
-    sys.puts ""
-
-  add: (task) -> @tasks.push(task) unless task in @tasks
-
-  did: (task) ->
-    @completed = (@data.completions[@date] ?= [])
-    @completed.push(task) if task in @tasks and task not in @completed
-
-tasks = new TaskList(yesterday)
-
-switch command
-  when "add"
-    tasks.add task
-  when "did"
-    tasks.did task
-
-tasks.print()
-tasks.save()
-
+load_tasks file, (tasks, completions) ->
+  switch command
+    when "add"
+      add tasks, task, (tasks) ->
+        save tasks, completions, file, ->
+          print tasks, completions, date
+    when "did"
+      did task, tasks, completions, date, (completions) ->
+        save tasks, completions, file, ->
+          print tasks, completions, date
+    else
+      print tasks, completions, date
