@@ -11,6 +11,14 @@ pad = (output) ->
   output()
   puts ""
 
+date_string = (opts = {}) ->
+  date = if opts.init
+    new Date(opts.init)
+  else
+    new Date
+  date.setDate date.getDate() - (opts.offset || 0)
+  date.toDateString()
+
 load_tasks = (file, callback) ->
   try
     data = if path.existsSync(file)
@@ -52,7 +60,7 @@ print = (tasks, completions, date) ->
     if tasks.length == 0
       puts "(use `doit add <task>` to add a task)"
     else
-      unless date == (new Date).toDateString()
+      unless date == date_string()
         puts "  #{date}\n"
       for task in tasks.sort()
         puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
@@ -61,23 +69,16 @@ chart = (tasks, completions, date) ->
   pad ->
     puts "           | #{ tasks.map((t) -> t[0..3]).join " | " }"
     puts "-----------+------+------+------+------+------"
-    for i in [6..0]
-      curdate = new Date(date)
-      curdate.setDate curdate.getDate() - i
-      curdate = curdate.toDateString()
 
+    for i in [6..0]
+      curdate = date_string init: date, offset: i
       completed = tasks.map (task) ->
-        if task in completions[curdate]
-          "XXXX"
-        else
-          "    "
+        if task in completions[curdate] then "XXXX" else "    "
       puts "#{curdate[0..-6]} | #{ completed.join " | " }"
 
 file = "#{process.env.HOME}/.doit"
 
-date = new Date
-date.setDate date.getDate() - 1 if "yesterday" in process.argv
-date = date.toDateString()
+date = date_string offset: (1 if "yesterday" in process.argv)
 
 [command, task] = process.argv[2..3]
 
