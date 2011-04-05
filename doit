@@ -57,6 +57,22 @@ print = (tasks, completions, date) ->
       for task in tasks.sort()
         puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
 
+chart = (tasks, completions, date) ->
+  pad ->
+    puts "           | #{ tasks.map((t) -> t[0..3]).join " | " }"
+    puts "-----------+------+------+------+------+------"
+    for i in [6..0]
+      curdate = new Date(date)
+      curdate.setDate curdate.getDate() - i
+      curdate = curdate.toDateString()
+
+      completed = tasks.map (task) ->
+        if task in completions[curdate]
+          "XXXX"
+        else
+          "    "
+      puts "#{curdate[0..-6]} | #{ completed.join " | " }"
+
 file = "#{process.env.HOME}/.doit"
 
 date = new Date
@@ -75,5 +91,7 @@ load_tasks file, (tasks, completions) ->
       did task, tasks, completions, date, (completions) ->
         save tasks, completions, file, ->
           print tasks, completions, date
+    when "chart"
+      chart tasks, completions, date
     else
       print tasks, completions, date
