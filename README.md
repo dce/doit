@@ -37,15 +37,15 @@
 
     > doit chart
 
-               | exer | prac
-    -----------+------+------
-    Wed Mar 09 |      |
-    Thu Mar 10 |      |
-    Fri Mar 11 |      |
-    Sat Mar 12 |      |
-    Sun Mar 13 |      |
-    Mon Mar 14 |      | XXXX
-    Tue Mar 15 | XXXX |
+                 | exer | prac
+      -----------+------+------
+      Wed Mar 09 |      |
+      Thu Mar 10 |      |
+      Fri Mar 11 |      |
+      Sat Mar 12 |      |
+      Sun Mar 13 |      |
+      Mon Mar 14 |      | XXXX
+      Tue Mar 15 | XXXX |
 
     > cat ~/.doit
     {
