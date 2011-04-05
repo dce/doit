@@ -4,10 +4,12 @@ sys = require 'sys'
 fs = require 'fs'
 path = require 'path'
 
+puts = (output) -> sys.puts output
+
 pad = (output) ->
-  sys.puts ""
+  puts ""
   output()
-  sys.puts ""
+  puts ""
 
 load_tasks = (file, callback) ->
   try
@@ -17,11 +19,11 @@ load_tasks = (file, callback) ->
       tasks: [], completions: {}
     callback data.tasks, data.completions
   catch error
-    sys.puts "There was a problem reading your .doit file: '#{error}'"
+    puts "There was a problem reading your .doit file: '#{error}'"
 
 add = (task, tasks, callback) ->
   if task in tasks
-    sys.puts "Task already in list"
+    puts "Task already in list"
   else
     tasks.push(task)
     callback tasks
@@ -30,9 +32,9 @@ did = (task, tasks, completions, date, callback) ->
   completions[date] ?= []
 
   if task not in tasks
-    sys.puts "Not a valid task"
+    puts "Not a valid task"
   else if task in completions[date]
-    sys.puts "Task already completed"
+    puts "Task already completed"
   else
     completions[date].push(task)
     callback completions
@@ -41,19 +43,19 @@ save = (tasks, completions, file, callback) ->
   data = tasks: tasks, completions: completions
   fs.writeFile file, JSON.stringify(data, undefined, 2), (err) ->
     if err
-      sys.puts err
+      puts err
     else
       callback()
 
 print = (tasks, completions, date) ->
   pad ->
     if tasks.length == 0
-      sys.puts "(use `doit add <task>` to add a task)"
+      puts "(use `doit add <task>` to add a task)"
     else
       unless date == (new Date).toDateString()
-        sys.puts "  #{date}\n"
+        puts "  #{date}\n"
       for task in tasks.sort()
-        sys.puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
+        puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
 
 file = "#{process.env.HOME}/.doit"
 
