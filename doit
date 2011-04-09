@@ -79,8 +79,8 @@ chart = (tasks, completions, date) ->
   task_string = (str) -> tasks.sort().map(str).join ''
 
   pad ->
-    puts "             " + task_string (t) -> "| #{t}    "[0..6]
-    puts "  -----------" + task_string (t) -> "+------"
+    puts "             " + task_string((t) -> "| #{t}    "[0..5] + " ")
+    puts "  -----------" + task_string((t) -> "+------")
 
     for i in [6..0]
       curdate = date_string init: date, offset: i
