@@ -71,9 +71,11 @@ print = (tasks, completions, date) ->
         puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
 
 chart = (tasks, completions, date) ->
+  task_string = (str) -> tasks.sort().map(str).join ''
+
   pad ->
-    puts "             | #{ tasks.map((t) -> t[0..3]).join " | " }"
-    puts "  -----------+------+------+------+------+------"
+    puts "             " + task_string (t) -> "| #{t}    "[0..6]
+    puts "  -----------" + task_string (t) -> "+------"
 
     for i in [6..0]
       curdate = date_string init: date, offset: i
