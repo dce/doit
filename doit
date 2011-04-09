@@ -20,14 +20,19 @@ date_string = (opts = {}) ->
   date.toDateString()
 
 load_tasks = (file, callback) ->
-  try
-    data = if path.existsSync(file)
-      JSON.parse fs.readFileSync(file)
+  path.exists file, (exists) ->
+    if exists
+      fs.readFile file, (error, data) ->
+        if error
+          puts "There was a problem reading your .doit file: '#{error}'"
+        else
+          try
+            parsed = JSON.parse data
+            callback parsed.tasks, parsed.completions
+          catch error
+            puts "There was a problem reading your .doit file: '#{error}'"
     else
-      tasks: [], completions: {}
-    callback data.tasks, data.completions
-  catch error
-    puts "There was a problem reading your .doit file: '#{error}'"
+      callback [], {}
 
 add = (task, tasks, callback) ->
   if task in tasks
