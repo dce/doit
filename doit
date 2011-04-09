@@ -35,7 +35,9 @@ load_tasks = (file, callback) ->
       callback [], {}
 
 add = (task, tasks, callback) ->
-  if task in tasks
+  if !task?
+    puts "Please enter a task"
+  else if task in tasks
     puts "Task already in list"
   else
     tasks.push(task)
