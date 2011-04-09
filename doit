@@ -20,17 +20,20 @@ date_string = (opts = {}) ->
   date.toDateString()
 
 load_tasks = (file, callback) ->
+  report_problem = (error) ->
+    puts "There was a problem reading your .doit file: '#{error}'"
+
   path.exists file, (exists) ->
     if exists
       fs.readFile file, (error, data) ->
         if error
-          puts "There was a problem reading your .doit file: '#{error}'"
+          report_problem error
         else
           try
             parsed = JSON.parse data
             callback parsed.tasks, parsed.completions
           catch error
-            puts "There was a problem reading your .doit file: '#{error}'"
+            report_problem error
     else
       callback [], {}
 
