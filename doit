@@ -12,10 +12,7 @@ pad = (output) ->
   puts ""
 
 date_string = (opts = {}) ->
-  date = if opts.init
-    new Date(opts.init)
-  else
-    new Date
+  date = if opts.init then new Date(opts.init) else new Date
   date.setDate date.getDate() - (opts.offset || 0)
   date.toDateString()
 
