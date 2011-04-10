@@ -73,17 +73,17 @@ print = (tasks, completions, date) ->
         puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
 
 chart = (tasks, completions, date) ->
-  task_string = (str) -> tasks.sort().map(str).join ''
+  task_line = (label, str) ->
+    puts "  #{label}#{ tasks.sort().map(str).join '' }"
 
   pad ->
-    puts "             " + task_string((t) -> "| #{t}    "[0..5] + " ")
-    puts "  -----------" + task_string((t) -> "+------")
+    task_line "           ", (task) -> "| #{task}    "[0..5] + " "
+    task_line "-----------", -> "+------"
 
     for i in [6..0]
       curdate = date_string init: date, offset: i
-      completed = tasks.map (task) ->
-        if task in completions[curdate] then "XXXX" else "    "
-      puts "  #{curdate[0..-6]} | #{ completed.join " | " }"
+      task_line "#{curdate[0..-6]} ", (task) ->
+        "| #{ if task in completions[curdate] then "XXXX" else "    " } "
 
 file = "#{process.env.HOME}/.doit"
 
