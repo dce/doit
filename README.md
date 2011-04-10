@@ -1,7 +1,7 @@
 # DOIT
 
 
-**DOIT** is a simple command line utility for tracking daily goals. Use it like this:
+**DOIT** is a simple command line utility for tracking daily goals. Put a symlink called `doit` to `doit.coffee` and use it like this:
 
     > doit
 
