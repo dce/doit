@@ -87,9 +87,9 @@ save_and_print = (tasks, completions, notes, date, file) ->
   save tasks, completions, notes, file, ->
     print tasks, completions, notes, date
 
-chart = (tasks, completions, date) ->
-  task_line = (label, str) ->
-    puts "  #{label}#{ tasks.sort().map(str).join '' }"
+chart = (tasks, completions, notes, date) ->
+  task_line = (label, note..., str) ->
+    puts "  #{label}#{ tasks.sort().map(str).join '' } #{note}"
 
   pad ->
     task_line "           ", (task) -> "| #{task}    "[0..5] + " "
@@ -97,7 +97,7 @@ chart = (tasks, completions, date) ->
 
     for i in [6..0]
       curdate = date_string init: date, offset: i
-      task_line "#{curdate[0..-6]} ", (task) ->
+      task_line "#{curdate[0..-6]} ", notes[curdate], (task) ->
         "| #{ if task in completions[curdate] then "XXXX" else "    " } "
 
 file = "#{process.env.HOME}/.doit"
@@ -118,6 +118,6 @@ load_tasks file, (tasks, completions, notes) ->
       note task, notes, date, (notes) ->
         save_and_print tasks, completions, notes, date, file
     when "chart"
-      chart tasks, completions, date
+      chart tasks, completions, notes, date
     else
       print tasks, completions, notes, date
