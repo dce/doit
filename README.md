@@ -35,6 +35,13 @@
       _ exercise
       X practice piano
 
+    > doit note "super productive day"
+
+      X exercise
+      _ practice piano
+
+      NOTE: super productive day
+
     > doit chart
 
                  | exer | prac
@@ -45,7 +52,7 @@
       Sat Mar 12 |      |
       Sun Mar 13 |      |
       Mon Mar 14 |      | XXXX
-      Tue Mar 15 | XXXX |
+      Tue Mar 16 | XXXX |       super productive day
 
     > cat ~/.doit
     {
@@ -60,6 +67,9 @@
         "Mon Mar 14 2011": [
           "practice piano"
         ]
+      },
+      "notes": {
+        "Tue Mar 15 2011": "super productive day"
       }
     }
 
