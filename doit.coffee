@@ -28,11 +28,15 @@ load_tasks = (file, callback) ->
         else
           try
             parsed = JSON.parse data
-            callback parsed.tasks, parsed.completions
+            parsed.tasks ?= []
+            parsed.completions ?= {}
+            parsed.notes ?= {}
+
+            callback parsed.tasks, parsed.completions, parsed.notes
           catch error
             report_problem error
     else
-      callback [], {}
+      callback [], {}, {}
 
 add = (task, tasks, callback) ->
   if !task?
@@ -54,15 +58,19 @@ did = (task, tasks, completions, date, callback) ->
     completions[date].push(task)
     callback completions
 
-save = (tasks, completions, file, callback) ->
-  data = tasks: tasks, completions: completions
+note = (note, notes, date, callback) ->
+  notes[date] = note
+  callback notes
+
+save = (tasks, completions, notes, file, callback) ->
+  data = tasks: tasks, completions: completions, notes: notes
   fs.writeFile file, JSON.stringify(data, undefined, 2), (err) ->
     if err
       puts err
     else
       callback()
 
-print = (tasks, completions, date) ->
+print = (tasks, completions, notes, date) ->
   pad ->
     if tasks.length == 0
       puts "(use `doit add <task>` to add a task)"
@@ -71,6 +79,13 @@ print = (tasks, completions, date) ->
         puts "  #{date}\n"
       for task in tasks.sort()
         puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
+      if notes[date]?
+        puts ""
+        puts "  NOTE: #{notes[date]}"
+
+save_and_print = (tasks, completions, notes, date, file) ->
+  save tasks, completions, notes, file, ->
+    print tasks, completions, notes, date
 
 chart = (tasks, completions, date) ->
   task_line = (label, str) ->
@@ -91,17 +106,18 @@ date = date_string offset: (1 if "yesterday" in process.argv)
 
 [command, task] = process.argv[2..3]
 
-load_tasks file, (tasks, completions) ->
+load_tasks file, (tasks, completions, notes) ->
   switch command
     when "add"
       add task, tasks, (tasks) ->
-        save tasks, completions, file, ->
-          print tasks, completions, date
+        save_and_print tasks, completions, notes, date, file
     when "did"
       did task, tasks, completions, date, (completions) ->
-        save tasks, completions, file, ->
-          print tasks, completions, date
+        save_and_print tasks, completions, notes, date, file
+    when "note"
+      note task, notes, date, (notes) ->
+        save_and_print tasks, completions, notes, date, file
     when "chart"
       chart tasks, completions, date
     else
-      print tasks, completions, date
+      print tasks, completions, notes, date
