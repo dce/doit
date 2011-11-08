@@ -1,10 +1,10 @@
 #!/usr/bin/env coffee
 
-sys = require 'sys'
+util = require 'util'
 fs = require 'fs'
 path = require 'path'
 
-puts = (output) -> sys.puts output
+puts = (output) -> util.puts output
 
 pad = (output) ->
   puts ""
