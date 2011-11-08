@@ -78,7 +78,7 @@ print = (tasks, completions, notes, date) ->
       unless date == date_string()
         puts "  #{date}\n"
       for task in tasks.sort()
-        puts "  #{ if task in completions[date] then "X" else "_" } #{task}"
+        puts "  #{ if task in (completions[date] || []) then "X" else "_" } #{task}"
       if notes[date]?
         puts ""
         puts "  NOTE: #{notes[date]}"
