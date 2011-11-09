@@ -98,7 +98,7 @@ chart = (tasks, completions, notes, date) ->
     for i in [6..0]
       curdate = date_string init: date, offset: i
       task_line "#{curdate[0..-6]} ", notes[curdate], (task) ->
-        "| #{ if task in completions[curdate] then "XXXX" else "    " } "
+        "| #{ if task in (completions[curdate] || []) then "XXXX" else "    " } "
 
 file = "#{process.env.HOME}/.doit"
 
