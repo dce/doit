@@ -86,14 +86,17 @@
     {
       "tasks": [
         "exercise",
-        "practice piano"
+        "practice piano",
+        "read"
       ],
       "completions": {
         "Tue Mar 15 2011": [
           "exercise"
         ],
         "Mon Mar 14 2011": [
-          "practice piano"
+          "exercise",
+          "practice piano",
+          "read"
         ]
       },
       "notes": {
