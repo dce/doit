@@ -4,7 +4,9 @@ util = require 'util'
 fs = require 'fs'
 path = require 'path'
 
-puts = (output) -> util.puts output
+from_cli = -> process.mainModule.filename.match(/doit.coffee/)
+
+puts = (output) -> util.puts(output) if from_cli()
 
 pad = (output) ->
   puts ""
@@ -109,7 +111,7 @@ chart = (tasks, completions, notes, date) ->
 exports.did = did
 exports.add = add
 
-if process.mainModule.filename.match(/doit.coffee/)
+if from_cli()
   file = "#{process.env.HOME}/.doit"
 
   if "yesterday" in process.argv
