@@ -38,25 +38,31 @@ load_tasks = (file, callback) ->
     else
       callback [], {}, {}
 
-add = (task, tasks, callback) ->
-  if !task?
-    puts "Please enter a task"
-  else if task in tasks
-    puts "Task already in list"
-  else
-    tasks.push(task)
-    callback tasks
+add = (tasks, task_list, callback) ->
+  for task in tasks
+    if !task?
+      puts "Please enter a task"
+    else if task in task_list
+      puts "Task already in list: #{task}"
+    else
+      task_list.push(task)
+      success = true
 
-did = (task, tasks, completions, date, callback) ->
+  callback tasks if success
+
+did = (tasks, task_list, completions, date, callback) ->
   completions[date] ?= []
 
-  if task not in tasks
-    puts "Not a valid task"
-  else if task in completions[date]
-    puts "Task already completed"
-  else
-    completions[date].push(task)
-    callback completions
+  for task in tasks
+    if task not in task_list
+      puts "Not a valid task: #{task}"
+    else if task in completions[date]
+      puts "Task already completed: #{task}"
+    else
+      completions[date].push(task)
+      success = true
+
+  callback completions if success
 
 note = (note, notes, date, callback) ->
   notes[date] = note
@@ -100,26 +106,32 @@ chart = (tasks, completions, notes, date) ->
       task_line "#{curdate[0..-6]} ", notes[curdate], (task) ->
         "| #{ if task in (completions[curdate] || []) then "XXXX" else "    " } "
 
-exports.did = did;
+exports.did = did
+exports.add = add
 
 if process.mainModule.filename.match(/doit.coffee/)
   file = "#{process.env.HOME}/.doit"
-  date = date_string offset: (1 if "yesterday" in process.argv)
 
-  [command, task] = process.argv[2..3]
+  if "yesterday" in process.argv
+    process.argv.pop()
+    date = date_string offset: 1
+  else
+    date = date_string()
 
-  load_tasks file, (tasks, completions, notes) ->
+  [command, tasks...] = process.argv[2..]
+
+  load_tasks file, (task_list, completions, notes) ->
     switch command
       when "add"
-        add task, tasks, (tasks) ->
-          save_and_print tasks, completions, notes, date, file
+        add tasks, task_list, (tasks) ->
+          save_and_print task_list, completions, notes, date, file
       when "did"
-        did task, tasks, completions, date, (completions) ->
-          save_and_print tasks, completions, notes, date, file
+        did tasks, task_list, completions, date, (completions) ->
+          save_and_print task_list, completions, notes, date, file
       when "note"
-        note task, notes, date, (notes) ->
-          save_and_print tasks, completions, notes, date, file
+        note tasks, notes, date, (notes) ->
+          save_and_print task_list, completions, notes, date, file
       when "chart"
-        chart tasks, completions, notes, date
+        chart task_list, completions, notes, date
       else
-        print tasks, completions, notes, date
+        print task_list, completions, notes, date
