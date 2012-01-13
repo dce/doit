@@ -100,24 +100,26 @@ chart = (tasks, completions, notes, date) ->
       task_line "#{curdate[0..-6]} ", notes[curdate], (task) ->
         "| #{ if task in (completions[curdate] || []) then "XXXX" else "    " } "
 
-file = "#{process.env.HOME}/.doit"
+exports.did = did;
 
-date = date_string offset: (1 if "yesterday" in process.argv)
+if process.mainModule.filename.match(/doit.coffee/)
+  file = "#{process.env.HOME}/.doit"
+  date = date_string offset: (1 if "yesterday" in process.argv)
 
-[command, task] = process.argv[2..3]
+  [command, task] = process.argv[2..3]
 
-load_tasks file, (tasks, completions, notes) ->
-  switch command
-    when "add"
-      add task, tasks, (tasks) ->
-        save_and_print tasks, completions, notes, date, file
-    when "did"
-      did task, tasks, completions, date, (completions) ->
-        save_and_print tasks, completions, notes, date, file
-    when "note"
-      note task, notes, date, (notes) ->
-        save_and_print tasks, completions, notes, date, file
-    when "chart"
-      chart tasks, completions, notes, date
-    else
-      print tasks, completions, notes, date
+  load_tasks file, (tasks, completions, notes) ->
+    switch command
+      when "add"
+        add task, tasks, (tasks) ->
+          save_and_print tasks, completions, notes, date, file
+      when "did"
+        did task, tasks, completions, date, (completions) ->
+          save_and_print tasks, completions, notes, date, file
+      when "note"
+        note task, notes, date, (notes) ->
+          save_and_print tasks, completions, notes, date, file
+      when "chart"
+        chart tasks, completions, notes, date
+      else
+        print tasks, completions, notes, date
