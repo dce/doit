@@ -67,7 +67,7 @@ did = (tasks, task_list, completions, date, callback) ->
   callback completions if success
 
 note = (note, notes, date, callback) ->
-  notes[date] = note
+  notes[date] = note.join "; "
   callback notes
 
 save = (tasks, completions, notes, file, callback) ->
