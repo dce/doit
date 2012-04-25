@@ -86,7 +86,7 @@ print = (tasks, completions, notes, date) ->
       unless date == date_string()
         puts "  #{date}\n"
       for task in tasks.sort()
-        puts "  #{ if task in (completions[date] || []) then "X" else "_" } #{task}"
+        puts "  #{ if task in (completions[date] || []) then "✓" else "_" } #{task}"
       if notes[date]?
         puts ""
         puts "  NOTE: #{notes[date]}"
@@ -106,7 +106,7 @@ chart = (tasks, completions, notes, date) ->
     for i in [6..0]
       curdate = date_string init: date, offset: i
       task_line "#{curdate[0..-6]} ", notes[curdate], (task) ->
-        "| #{ if task in (completions[curdate] || []) then "XXXX" else "    " } "
+        "| #{ if task in (completions[curdate] || []) then "■■■■" else "    " } "
 
 exports.did = did
 exports.add = add
