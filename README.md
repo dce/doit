@@ -18,7 +18,7 @@
 
     > doit did exercise
 
-      X exercise
+      ✓ exercise
       _ practice piano
 
     > doit yesterday
@@ -33,11 +33,11 @@
       Mon Mar 14 2011
 
       _ exercise
-      X practice piano
+      ✓ practice piano
 
     > doit note "super productive day"
 
-      X exercise
+      ✓ exercise
       _ practice piano
 
       NOTE: super productive day
@@ -51,12 +51,12 @@
        Fri Mar 11 |      |
        Sat Mar 12 |      |
        Sun Mar 13 |      |
-       Mon Mar 14 |      | XXXX
-       Tue Mar 16 | XXXX |       super productive day
+       Mon Mar 14 |      | ■■■■
+       Tue Mar 16 | ■■■■ |       super productive day
 
     > doit add read
 
-      X exercise
+      ✓ exercise
       _ practice piano
       _ read
 
@@ -64,9 +64,9 @@
 
     > doit did read "practice piano"
 
-      X exercise
-      X practice piano
-      X read
+      ✓ exercise
+      ✓ practice piano
+      ✓ read
 
       NOTE: super productive day
 
@@ -79,8 +79,8 @@
       Fri Mar 11 |      |      |
       Sat Mar 12 |      |      |
       Sun Mar 13 |      |      |
-      Mon Mar 14 |      | XXXX |
-      Tue Mar 16 | XXXX | XXXX | XXXX  super productive day
+      Mon Mar 14 |      | ■■■■ |
+      Tue Mar 16 | ■■■■ | ■■■■ | ■■■■  super productive day
 
     > cat ~/.doit
     {
