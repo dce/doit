@@ -2,7 +2,6 @@
 
 util = require 'util'
 fs = require 'fs'
-path = require 'path'
 
 from_cli = -> process.mainModule.filename.match(/doit.coffee/)
 
@@ -22,7 +21,7 @@ load_tasks = (file, callback) ->
   report_problem = (error) ->
     puts "There was a problem reading your .doit file: '#{error}'"
 
-  path.exists file, (exists) ->
+  fs.exists file, (exists) ->
     if exists
       fs.readFile file, (error, data) ->
         if error
